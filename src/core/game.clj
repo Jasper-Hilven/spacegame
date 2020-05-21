@@ -1,13 +1,16 @@
 (ns core.game
-  (:use world.core))
+  (:use world.core)
+  (:use ship.core))
 (use 'debux.core)
+
 (def start-pos {:galaxy 0
                 :system 0
                 :planet 0})
 (defn create-new-game []
   {:world    (get-world)
    :position start-pos
-   :mode     :building})
+   :mode     :playing   ;;:building vs :playing
+   :ship start-ship})
 
 (defn describe-position [world position]
    (let [
@@ -22,3 +25,4 @@
 (describe-position
   (:world test-game)
   start-pos)
+(create-new-game)
