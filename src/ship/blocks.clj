@@ -57,28 +57,34 @@
   {:basic-chassis {:name          "Basic Chassis"
                    :function      :chassis
                    :chassis-level 1
-                   :material      {:plastic 4}
+                   :material      {:plastic 100 :steel 100}
                    :resistance    low-resistance}
    :basic-core    {:name          "Basic core"
                    :function      :core
                    :chassis-level 3
-                   :material      {:electronics 2 :plastic 2 :titanium 2 :steel 2}
+                   :material      {:electronics 200 :plastic 100 :titanium 100 :steel 100}
                    :resistance    low-resistance}
    :basic-motor   {:name       "Basic motor"
                    :function   :elec-engine
-                   :material   {:plastic 2 :steel 1 :electronics 1}
+                   :material   {:plastic 20 :steel 150 :electronics 10}
                    :resistance low-resistance}
    :basic-battery {:name       "Basic battery"
                    :function   :battery
-                   :material   {:plastic 2 :electronics 1 :lithium-ion 1}
+                   :material   {:steel 10 :plastic 20 :electronics 10 :lithium-ion 200}
                    :resistance low-resistance}})
+(defn get-block-mass [block]
+  (if (nil? block)
+    0
+    (let [materials (:material block)] (reduce-kv #(+ % (* %3 (:weight (materialtypes %2)))) 0 materials))))
+(get-block-mass (block-types :basic-core))
 (defn map-to-array2 [m]
-  (dbg (let [kys (keys m)
+  (let [kys (keys m)
         minx (reduce #(min % (:x %2)) 0 kys)
-        miny (reduce #(min  %  (:y %2)) 0 kys)
-        maxx (reduce #(max   %  (:x %2)) 0 kys)
-        maxy (reduce #(max  %  (:y %2)) 0 kys)]
-    (vec2d (- maxx minx -1) (- maxy miny -1) #(m {:x (- %2 minx) :y (- % miny)})))))
+        miny (reduce #(min % (:y %2)) 0 kys)
+        maxx (reduce #(max % (:x %2)) 0 kys)
+        maxy (reduce #(max % (:y %2)) 0 kys)]
+    (vec2d (- maxx minx -1) (- maxy miny -1) #(m {:x (- %2 minx) :y (- % miny)}))))
+
 (defn array2-to-map [arr]
   (reduce-kv
     (fn [ry y yColl]
@@ -86,7 +92,9 @@
         (fn [r x v]
           (if (nil? v) r (assoc r {:x x :y y} v))) ry yColl))
     {}
+
     arr))
+
 (array2-to-map [[1 2 3]
                 [1 2 3]])
-(map-to-array2  {{:x 1 :y 2} "s" {:x 2 :y 3} "p"})
+(map-to-array2 {{:x 1 :y 2} "s" {:x 2 :y 3} "p"})

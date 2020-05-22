@@ -9,20 +9,21 @@
 (defn create-new-game []
   {:world    (get-world)
    :position start-pos
-   :mode     :playing   ;;:building vs :playing
-   :ship start-ship})
+   :mode     :playing                                       ;;:building vs :playing
+   :ship     start-ship})
 
 (defn describe-position [world position]
-   (let [
-             galaxy ((:galaxies world) (:galaxy position))
-             system ((galaxy :systems) (:system position))
-             planet ((system :planets) (:planet position))]
-         {:world  world
-          :galaxy galaxy
-          :system system
-          :planet planet}))
+  (let [
+        galaxy ((:galaxies world) (:galaxy position))
+        system ((galaxy :systems) (:system position))
+        planet ((system :planets) (:planet position))]
+    {:world  world
+     :galaxy galaxy
+     :system system
+     :planet planet}))
 (def test-game (create-new-game))
 (describe-position
   (:world test-game)
   start-pos)
 (create-new-game)
+(defn set-to-building-mode [game] (assoc))
