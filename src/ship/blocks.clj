@@ -55,21 +55,23 @@
 
 (def block-types
   {:basic-chassis {:name          "Basic Chassis"
-                   :function      :chassis
                    :chassis-level 1
                    :material      {:plastic 100 :steel 100}
                    :resistance    low-resistance}
    :basic-core    {:name          "Basic core"
-                   :function      :core
+                   :is-core       true
                    :chassis-level 3
                    :material      {:electronics 200 :plastic 100 :titanium 100 :steel 100}
                    :resistance    low-resistance}
    :basic-motor   {:name       "Basic motor"
-                   :function   :elec-engine
+                   :engine     {:electric             1
+                                :power-conversion     (float 0.5)
+                                :energy-input         1E12
+                                :max-energy-input     4E12
+                                :max-power-conversion (float 0.2)}
                    :material   {:plastic 20 :steel 150 :electronics 10}
                    :resistance low-resistance}
    :basic-battery {:name       "Basic battery"
-                   :function   :battery
                    :material   {:steel 10 :plastic 20 :electronics 10 :lithium-ion 200}
                    :resistance low-resistance}})
 (defn get-block-mass [block]

@@ -2,9 +2,9 @@
 
 (use '[ship.blocks :only [block-types, array2-to-map]])
 (use '[ship.chassis :only [is-valid-structure]])
-(use '[ship.movement :only [get-mass-ship]])
+(use '[ship.movement :only [get-mass-ship get-total-engine-power get-jump-energy-cost-info]])
 (use 'debux.core)
-
+(use 'world.position)
 
 (def start-ship-recipe
   (let [h :basic-chassis
@@ -25,7 +25,7 @@
   )
 (defn build-ship [recipe energy] {:structure (array2-to-map (mapv #(mapv block-types %) recipe))
                                   :energy    energy})
-(def start-ship (build-ship start-ship-recipe 1000))
-(is-valid-structure (:structure start-ship))
+(defn start-ship [] (build-ship start-ship-recipe {:electric 1000}))
+(is-valid-structure (:structure (start-ship)))
 
- (get-mass-ship start-ship)
+(get-jump-energy-cost-info (start-ship) start-pos next-planet)

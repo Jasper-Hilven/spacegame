@@ -21,7 +21,7 @@
 (defn get-circle-around [position radius] (filter #(not= position %) (map #(add-position position %) (get-circled-positions radius))))
 (defn is-valid-chassis-point [point chassis]
   (let [block (chassis point)]
-    (if (or (nil? block) (= (:function block) :core))
+    (if (or (nil? block) (:is-core block))
       {:valid true :reason :core}
       (let [requirements (get-chassis-requirements (get-level block))
             required-level (:level requirements)
@@ -36,7 +36,7 @@
 
 (defn has-valid-single-core [structure]
   (let [positions (keys structure)
-        cores (filter #(= :core (:function (structure %))) positions)
+        cores (filter #(:is-core (structure %)) positions)
         nbCores (count cores)
         valid (= 1 nbCores)
         error (if (< 1 nbCores)
@@ -63,18 +63,18 @@
 
 
 (get-circle-around {:x 0 :y 0} 2)
-(ship.chassis/is-valid-chassis-point {:x 0 :y 0} {{:x 0 :y 0} {:function :core}})
+(ship.chassis/is-valid-chassis-point {:x 0 :y 0} {{:x 0 :y 0} {:is-core true}})
 (ship.chassis/is-valid-chassis-point
   {:x 1 :y 1}
-  {{:x 0 :y 0} {:function :core :chassis-level 2},
-   {:x 1 :y 1} {:function :chassis :chassis-level 2}})
+  {{:x 0 :y 0} {:is-core true :chassis-level 2},
+   {:x 1 :y 1} {:chassis-level 2}})
 
 (ship.chassis/is-valid-chassis-point
   {:x 1 :y 1}
-  {{:x 0 :y 0} {:function :core :chassis-level 3},
-   {:x 1 :y 1} {:function :chassis :chassis-level 2}})
+  {{:x 0 :y 0} {:is-core true :chassis-level 3},
+   {:x 1 :y 1} {:chassis-level 2}})
 
 (ship.chassis/is-valid-structure
-  {{:x 0 :y 0} {:function :core :chassis-level 3},
-   {:x 1 :y 0} {:function :core :chassis-level 3}
-   {:x 1 :y 10} {:function :chassis :chassis-level 2}})
+  {{:x 0 :y 0}  {:is-core true :chassis-level 3},
+   {:x 1 :y 0}  {:is-core true :chassis-level 3}
+   {:x 1 :y 10} {:chassis-level 2}})
