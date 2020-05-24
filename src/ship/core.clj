@@ -24,11 +24,12 @@
      ]
     )
   )
-(defn build-ship [recipe]
+(defn build-ship [recipe position]
   (let [structure (array2-to-map (mapv #(mapv block-types %) recipe))]
     {:structure structure
-     :energy    (get-initial-energy structure)}))
-(defn start-ship [] (build-ship start-ship-recipe))
+     :energy    (get-initial-energy structure)
+     :position position}))
+(defn start-ship [] (build-ship start-ship-recipe start-pos))
 (is-valid-structure (:structure (start-ship)))
 
 (def ship (start-ship))

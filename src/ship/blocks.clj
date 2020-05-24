@@ -56,8 +56,8 @@
 (def block-types
   (let [basic-engine-property {:electric             1
                                :power-conversion     (float 0.5)
-                               :energy-input         1E12
-                               :max-energy-input     4E12
+                               :energy-input         1E13
+                               :max-energy-input     4E13
                                :max-power-conversion (float 0.2)}
         basic-battery-property {:capacity 1E13}]
     {:basic-chassis {:name          "Basic Chassis"

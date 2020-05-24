@@ -12,7 +12,8 @@
 (defn get-mass-ship [ship]
   (let [blocks (:structure ship)]
     (reduce-kv (fn [r _ bl] (+ r (get-block-mass bl))) 0 blocks)))
-
+(defn get-position-ship [game]
+  (:position (:ship game)))
 (defn get-block-power-data [block]
   (if-let [engine (and block (:engine block))]
     engine
@@ -63,68 +64,69 @@
     ))
 
 (defn get-jump-energy-cost-info [ship position next-position]
-  (dbg (let [mass (get-mass-ship ship)
-             shop ship
-             jump-cost (jump-energy-cost position next-position mass)
-             engine-power-info (get-total-engine-power ship)
-             energy-output (:energy-output engine-power-info)
-             max-energy-output (:max-energy-output engine-power-info)
-             enough-energy-output-jump (>= max-energy-output jump-cost)
-             enough-energy-efficient-jump (>= energy-output jump-cost)
-             efficient-energy-required-output (min jump-cost energy-output)
-             best-power-efficiency (:best-power-efficiency engine-power-info)
-             efficient-energy-required-input (/ efficient-energy-required-output best-power-efficiency)
-             remaining-required-inefficient-energy-output (- jump-cost efficient-energy-required-output)
-             remaining-inefficient-energy-can-output (:inefficient-energy-output engine-power-info)
-             remaining-inefficient-energy-output (min remaining-inefficient-energy-can-output remaining-required-inefficient-energy-output)
-             inefficient-output-factor (if (= 0 remaining-inefficient-energy-can-output)
-                                         0
-                                         (/ remaining-inefficient-energy-output remaining-inefficient-energy-can-output))
-             inefficient-energy-input (* inefficient-output-factor (:inefficient-energy-input engine-power-info))
-             energy-output-shortage-jump (if enough-energy-output-jump 0 (- jump-cost max-energy-output))
-             energy-cost (+ efficient-energy-required-input inefficient-energy-input)] (merge {}
-                      {
-                       :engine-info                     engine-power-info
-                       :jump-required-output            jump-cost
-                       :enough-energy-output-jump       enough-energy-output-jump
-                       :enough-energy-efficient-jump    enough-energy-efficient-jump
-                       :energy-output-shortage-jump     energy-output-shortage-jump
-                       :energy-cost                     energy-cost
-                       :inefficient-energy-input        inefficient-energy-input
-                       :efficient-energy-required-input efficient-energy-required-input
-                       })
-               )))
+  (let [mass (get-mass-ship ship)
+        shop ship
+        jump-cost (jump-energy-cost position next-position mass)
+        engine-power-info (get-total-engine-power ship)
+        energy-output (:energy-output engine-power-info)
+        max-energy-output (:max-energy-output engine-power-info)
+        enough-energy-output-jump (>= max-energy-output jump-cost)
+        enough-energy-efficient-jump (>= energy-output jump-cost)
+        efficient-energy-required-output (min jump-cost energy-output)
+        best-power-efficiency (:best-power-efficiency engine-power-info)
+        efficient-energy-required-input (/ efficient-energy-required-output best-power-efficiency)
+        remaining-required-inefficient-energy-output (- jump-cost efficient-energy-required-output)
+        remaining-inefficient-energy-can-output (:inefficient-energy-output engine-power-info)
+        remaining-inefficient-energy-output (min remaining-inefficient-energy-can-output remaining-required-inefficient-energy-output)
+        inefficient-output-factor (if (= 0 remaining-inefficient-energy-can-output)
+                                    0
+                                    (/ remaining-inefficient-energy-output remaining-inefficient-energy-can-output))
+        inefficient-energy-input (* inefficient-output-factor (:inefficient-energy-input engine-power-info))
+        energy-output-shortage-jump (if enough-energy-output-jump 0 (- jump-cost max-energy-output))
+        energy-cost (+ efficient-energy-required-input inefficient-energy-input)]
+    (merge {}
+           {
+            :engine-info                     engine-power-info
+            :jump-required-output            jump-cost
+            :enough-energy-output-jump       enough-energy-output-jump
+            :enough-energy-efficient-jump    enough-energy-efficient-jump
+            :energy-output-shortage-jump     energy-output-shortage-jump
+            :energy-cost                     energy-cost
+            :inefficient-energy-input        inefficient-energy-input
+            :efficient-energy-required-input efficient-energy-required-input
+            })
+    ))
 (defn get-jump-info [ship position next-position]
-  (dbg (let [
-
-             jump-energy-cost-info (get-jump-energy-cost-info ship position next-position)
-             ship-energy (:electric (:energy ship))
-             required-energy (:energy-cost jump-energy-cost-info)
-             has-enough-energy (>= ship-energy required-energy)
-             jumped (and has-enough-energy (:enough-energy-output-jump jump-energy-cost-info))
-             new-energy (- ship-energy (if jumped required-energy 0))
-             new-position (if jumped next-position position)]
-         (merge {
-                 :required-energy   required-energy
-                 :ship-energy       ship-energy
-                 :has-enough-energy has-enough-energy
-                 :new-energy        new-energy
-                 :jumped            jumped
-                 :new-position      new-position}
-
-                jump-energy-cost-info)
-         )))
-(defn update-position-ship [game next-position]
-  (assoc-in game [:ship :position] next-position ))
-
-(defn try-move-ship [game next-position]
   (let [
-        jump-info (get-jump-info (:ship game) (:position game) next-position)
+
+        jump-energy-cost-info (get-jump-energy-cost-info ship position next-position)
+        ship-energy (:electric (:energy ship))
+        required-energy (:energy-cost jump-energy-cost-info)
+        has-enough-energy (>= ship-energy required-energy)
+        jumped (and has-enough-energy (:enough-energy-output-jump jump-energy-cost-info))
+        new-energy (- ship-energy (if jumped required-energy 0))
+        new-position (if jumped next-position position)]
+    (merge {
+            :required-energy   required-energy
+            :ship-energy       ship-energy
+            :has-enough-energy has-enough-energy
+            :new-energy        new-energy
+            :jumped            jumped
+            :new-position      new-position}
+
+           jump-energy-cost-info)
+    ))
+(defn update-position-ship [game next-position]
+  (assoc-in game [:ship :position] next-position))
+
+(defn try-move-main-ship [game next-position]
+  (let [
+        jump-info (get-jump-info (:ship game) (get-position-ship game) next-position)
         ]
 
     (-> game
         (update-position-ship (:new-position jump-info))
-        (change-ship-energy (:new-energy jump-info)))
+        (set-ship-energy (:new-energy jump-info)))
     ))
 
 
