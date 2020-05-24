@@ -13,7 +13,7 @@
    :water       {:name "Water" :weight 1 :form :liquid}
    :oil         {:name "Oil" :weight 1 :form :liquid}
    :plastic     {:name "Plastic" :weight 0.5 :form :solid}
-   :steel       {:name "Steel" :weight 5 :form :solid}
+   :iron        {:name "Steel" :weight 5 :form :solid}
    :titanium    {:name "Titanium" :weight 2 :form :solid}
    :electronics {:name "Electronics" :weight 2 :form :solid}
    :lithium-ion {:name "Lithium Ion" :weight 3 :form :solid}
@@ -54,26 +54,33 @@
   (mapv (fn [x] (mapv (fn [y] (f x y)) (range sx))) (range sy)))
 
 (def block-types
-  {:basic-chassis {:name          "Basic Chassis"
-                   :chassis-level 1
-                   :material      {:plastic 100 :steel 100}
-                   :resistance    low-resistance}
-   :basic-core    {:name          "Basic core"
-                   :is-core       true
-                   :chassis-level 3
-                   :material      {:electronics 200 :plastic 100 :titanium 100 :steel 100}
-                   :resistance    low-resistance}
-   :basic-motor   {:name       "Basic motor"
-                   :engine     {:electric             1
-                                :power-conversion     (float 0.5)
-                                :energy-input         1E12
-                                :max-energy-input     4E12
-                                :max-power-conversion (float 0.2)}
-                   :material   {:plastic 20 :steel 150 :electronics 10}
-                   :resistance low-resistance}
-   :basic-battery {:name       "Basic battery"
-                   :material   {:steel 10 :plastic 20 :electronics 10 :lithium-ion 200}
-                   :resistance low-resistance}})
+  (let [basic-engine-property {:electric             1
+                               :power-conversion     (float 0.5)
+                               :energy-input         1E12
+                               :max-energy-input     4E12
+                               :max-power-conversion (float 0.2)}
+        basic-battery-property {:capacity 1E13}]
+    {:basic-chassis {:name          "Basic Chassis"
+                     :chassis-level 1
+                     :material      {:plastic 100 :iron 100}
+                     :resistance    low-resistance}
+     :basic-core    {:name          "Basic core"
+                     :is-core       true
+                     :chassis-level 3
+                     :material      {:electronics 200 :plastic 100 :titanium 100 :iron 100}
+                     :resistance    low-resistance
+                     :battery       basic-battery-property
+                     :engine        basic-engine-property
+
+                     }
+     :basic-motor   {:name       "Basic motor"
+                     :engine     basic-engine-property
+                     :material   {:plastic 20 :iron 150 :electronics 10}
+                     :resistance low-resistance}
+     :basic-battery {:name       "Basic battery"
+                     :material   {:iron 10 :plastic 20 :electronics 10 :lithium-ion 200}
+                     :battery    basic-battery-property
+                     :resistance low-resistance}}))
 (defn get-block-mass [block]
   (if (nil? block)
     0

@@ -1,7 +1,8 @@
 (ns core.game
   (:use world.core)
   (:use ship.core)
-  (:use world.position))
+  (:use world.position)
+  (:use ship.movement))
 
 (use 'debux.core)
 
@@ -9,12 +10,8 @@
   {:world    (get-world)
    :position start-pos
    :mode     :playing                                       ;;:building vs :playing
-   :ship     start-ship})
+   :ship     (start-ship) })
 
-(def test-game (create-new-game))
-(describe-position
-  (:world test-game)
-  start-pos)
-(create-new-game)
-(defn set-to-building-mode
-  [game] (assoc))
+(def game (create-new-game))
+(:ship game)
+(def game-jumped-ship (-> game (try-move-ship next-planet)))
