@@ -34,16 +34,16 @@
                      :size size}))
 (defn get-planet-class [] (randi/random-coll [:gas :metal :terrestial :sea]))
 (defn resources-to-find [clazz] (clazz {
-                                        :gas        {:CO2 1000
-                                                     :O2  1000
+                                        :gas        {:CO2 0.5
+                                                     :O2  0.5
                                                      }
-                                        :metal      {:iron 20 :titanium 20 :lithium-ion 20}
-                                        :terrestial {:food   10
-                                                     :water  10
-                                                     :carbon 100}
-                                        :sea        {:water  1000
-                                                     :carbon 10
-                                                     :iron   5}}))
+                                        :metal      {:iron 0.3 :titanium 0.3 :lithium-ion 0.1}
+                                        :terrestial {:food   0.2
+                                                     :water  0.2
+                                                     :carbon 0.2}
+                                        :sea        {:water  0.4
+                                                     :carbon 0.5
+                                                     :iron   0.5}}))
 (defn gen-planet [index of star]
   (let [clazz (get-planet-class)]
     {

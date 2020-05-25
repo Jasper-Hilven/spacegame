@@ -71,7 +71,7 @@
                      :resistance    low-resistance
                      :battery       basic-battery-property
                      :engine        basic-engine-property
-
+                     :storage       {:max-fluid 50 :max-gas 50 :max-solid 100}
                      }
      :basic-motor   {:name       "Basic motor"
                      :engine     basic-engine-property
@@ -80,7 +80,17 @@
      :basic-battery {:name       "Basic battery"
                      :material   {:iron 10 :plastic 20 :electronics 10 :lithium-ion 200}
                      :battery    basic-battery-property
-                     :resistance low-resistance}}))
+                     :resistance low-resistance}
+     :basic-miner   {:name       "basic miner"
+                     :material   {:iron 300 :plastic 20 :electronics 10 :titanium 40}
+                     :resistance low-resistance
+                     :miner      {:resources-per-second 1}}
+     :basic-storage {:name       "basic storage"
+                     :material   {:plastic 200 :electronics 5}
+                     :resistance low-resistance
+                     :storage    {:max-fluid 200
+                                  :max-gas   200
+                                  :max-solid 300}}}))
 (defn get-block-mass [block]
   (if (nil? block)
     0
