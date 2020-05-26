@@ -1,9 +1,11 @@
 (ns core.game
   (:use world.core)
   (:use ship.core)
+  (:use ship.storage)
   (:use world.position)
   (:use ship.basics)
-  (:use ship.movement))
+  (:use ship.movement)
+  (:use ship.mining))
 
 (use 'debux.core)
 
@@ -17,3 +19,10 @@
 (def game-jumped-ship (try-move-player-ship game next-planet))
 (def game-jumped-ship2 (try-move-player-ship game-jumped-ship next-system))
 (get-jump-info (get-player-ship game-jumped-ship) (get-position-player-ship game-jumped-ship) next-system)
+
+(def game-player-mined (-> game
+                           (set-player-ship-mining true)
+                           (update-mining-player-ship 10)))
+(get-player-ship-storage game-player-mined)
+(get-mass-ship (get-player-ship game))
+(get-mass-ship (get-player-ship game-player-mined))

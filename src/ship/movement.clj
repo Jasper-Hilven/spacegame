@@ -2,8 +2,10 @@
 (use '[ship.blocks :only [get-block-mass]])
 (use 'debux.core)
 (use 'world.position)
+(use 'world.resource)
 (use 'ship.energy)
 (use 'ship.basics)
+(use 'ship.storage)
 (defn jump-energy-cost [position next-position mass]
   (let
     [diff (diff-position position next-position)]
@@ -11,10 +13,11 @@
     ))
 
 (defn get-mass-ship [ship]
-  (let [blocks (:structure ship)]
-    (reduce-kv (fn [r _ bl] (+ r (get-block-mass bl))) 0 blocks)))
-(defn get-position-player-ship [game]
-  (:position (get-player-ship game)))
+  (let [blocks (:structure ship)
+        mass-blocks (reduce-kv (fn [r _ bl] (+ r (get-block-mass bl))) 0 blocks)
+        mass-resources (get-weight-resources (get-ship-storage ship))]
+    (+ mass-resources mass-blocks)))
+
 (defn get-block-power-data [block]
   (if-let [engine (and block (:engine block))]
     engine
@@ -117,8 +120,7 @@
 
            jump-energy-cost-info)
     ))
-(defn update-position-ship [game next-position]
-  (assoc-in game [:ship :position] next-position))
+
 
 (defn try-move-player-ship [game next-position]
   (let [
@@ -126,7 +128,7 @@
         ]
 
     (-> game
-        (update-position-ship (:new-position jump-info))
+        (update-position-player-ship (:new-position jump-info))
         (set-ship-energy (:new-energy jump-info)))
     ))
 

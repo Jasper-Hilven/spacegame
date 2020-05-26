@@ -1,24 +1,8 @@
 (ns ship.blocks)
 (use 'debux.core)
-
-
-(def gas-weight 0.05)
-
-(def materialtypes
-  {
-   :food        {:name "Food" :weight 1 :form :solid}
-   :O2          {:name "Oxygen" :weight gas-weight :form :gas}
-   :CO2         {:name "CO2" :weight gas-weight :form :gas}
-   :carbon      {:name "Carbon" :weight 1 :form :solid}
-   :water       {:name "Water" :weight 1 :form :liquid}
-   :oil         {:name "Oil" :weight 1 :form :liquid}
-   :plastic     {:name "Plastic" :weight 0.5 :form :solid}
-   :iron        {:name "Steel" :weight 5 :form :solid}
-   :titanium    {:name "Titanium" :weight 2 :form :solid}
-   :electronics {:name "Electronics" :weight 2 :form :solid}
-   :lithium-ion {:name "Lithium Ion" :weight 3 :form :solid}
-   })
-
+(use 'ship.storage)
+(use 'ship.mining)
+(use 'world.resource)
 (def resource-conversions
   [
    {:name "Create oxygen" :from {:CO2 20} :to {:02 20 :carbon 1}}
@@ -26,19 +10,6 @@
    {:name "Consume food" :from {:food 1 :O2 20} :to {:CO2 20 :water 1}}
    {:name "Create plastic" :from {:oil 1} :to {:plastic 2}}
    ])
-
-(def block-functions
-  {:chassis       {:name "Chassis"}
-   :core          {:name "Core"}
-   :outer-shield  {:name "Outer shield"}
-   :elec-engine   {:name "Electrical engine"}
-   :battery       {:name "Battery"}
-   :comb-engine   {:name "Combustion engine"}
-   :gas-tank      {:name "Gas tank"}
-   :liquid-tank   {:name "Liquid tank"}
-   :solid-storage {:name "Solid storage"}
-   :block-storage {:name "Block storage"}
-   :laser         {:name "Laser"}})
 
 (def resistances
   {:impact-resistance {:name "Impact resistance"}
@@ -63,38 +34,33 @@
     {:basic-chassis {:name          "Basic Chassis"
                      :chassis-level 1
                      :material      {:plastic 100 :iron 100}
-                     :resistance    low-resistance}
+                     }
      :basic-core    {:name          "Basic core"
                      :is-core       true
                      :chassis-level 3
                      :material      {:electronics 200 :plastic 100 :titanium 100 :iron 100}
-                     :resistance    low-resistance
                      :battery       basic-battery-property
                      :engine        basic-engine-property
-                     :storage       {:max-fluid 50 :max-gas 50 :max-solid 100}
+                     :storage       basic-core-storage
                      }
-     :basic-motor   {:name       "Basic motor"
-                     :engine     basic-engine-property
-                     :material   {:plastic 20 :iron 150 :electronics 10}
-                     :resistance low-resistance}
-     :basic-battery {:name       "Basic battery"
-                     :material   {:iron 10 :plastic 20 :electronics 10 :lithium-ion 200}
-                     :battery    basic-battery-property
-                     :resistance low-resistance}
-     :basic-miner   {:name       "basic miner"
-                     :material   {:iron 300 :plastic 20 :electronics 10 :titanium 40}
-                     :resistance low-resistance
-                     :miner      {:resources-per-second 1}}
-     :basic-storage {:name       "basic storage"
-                     :material   {:plastic 200 :electronics 5}
-                     :resistance low-resistance
-                     :storage    {:max-fluid 200
-                                  :max-gas   200
-                                  :max-solid 300}}}))
+     :basic-motor   {:name     "Basic motor"
+                     :engine   basic-engine-property
+                     :material {:plastic 20 :iron 150 :electronics 10}
+                     }
+     :basic-battery {:name     "Basic battery"
+                     :material {:iron 10 :plastic 20 :electronics 10 :lithium-ion 200}
+                     :battery  basic-battery-property
+                     }
+     :basic-miner   {:name     "basic miner"
+                     :material {:iron 300 :plastic 20 :electronics 10 :titanium 40}
+                     :miner    {:resources-per-second 1}}
+     :basic-storage {:name     "basic storage"
+                     :material {:plastic 200 :electronics 5}
+                     :storage  basic-storage-block-storage}}))
 (defn get-block-mass [block]
   (if (nil? block)
     0
-    (let [materials (:material block)] (reduce-kv #(+ % (* %3 (:weight (materialtypes %2)))) 0 materials))))
+    (let [materials (:material block)] (reduce-kv #(+ % (* %3 (:weight (resources %2)))) 0 materials))))
 (get-block-mass (block-types :basic-core))
 (defn map-to-array2 [m]
   (let [kys (keys m)
