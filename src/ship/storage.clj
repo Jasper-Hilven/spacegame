@@ -1,13 +1,9 @@
 (ns ship.storage)
 (use 'ship.basics)
 (use 'world.resource)
-(def basic-core-storage {:liquid 50 :gas 50 :solid 100})
-(def basic-storage-block-storage {:liquid 200 :gas 200 :solid 300})
-(def empty-block-storage-capacity {:liquid 0 :gas 0 :solid 0})
+(def empty-block-storage-capacity (reduce #(assoc % %2 0) {} forms))
 (defn add-storage-capacities [s1 s2]
-  {:liquid (+ (:liquid s1) (:liquid s2))
-   :gas    (+ (:gas s1) (:gas s2))
-   :solid  (+ (:solid s1) (:solid s2))})
+  (reduce #(assoc % %2 (+ (%2 s1) (%2 s2))) {} forms))
 (defn get-block-storage [block] (or (:storage block) empty-block-storage-capacity))
 (defn calculate-ship-storage-capacity [structure]
   (reduce-kv #(add-storage-capacities (get-block-storage %3) %)

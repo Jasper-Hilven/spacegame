@@ -24,44 +24,11 @@
 (defn vec2d [sx sy f]
   (mapv (fn [x] (mapv (fn [y] (f x y)) (range sx))) (range sy)))
 
-(def block-types
-  (let [basic-engine-property {:electric             1
-                               :power-conversion     (float 0.5)
-                               :energy-input         1E13
-                               :max-energy-input     4E13
-                               :max-power-conversion (float 0.2)}
-        basic-battery-property {:capacity 1E13}]
-    {:basic-chassis {:name          "Basic Chassis"
-                     :chassis-level 1
-                     :material      {:plastic 100 :iron 100}
-                     }
-     :basic-core    {:name          "Basic core"
-                     :is-core       true
-                     :chassis-level 3
-                     :material      {:electronics 200 :plastic 100 :titanium 100 :iron 100}
-                     :battery       basic-battery-property
-                     :engine        basic-engine-property
-                     :storage       basic-core-storage
-                     }
-     :basic-motor   {:name     "Basic motor"
-                     :engine   basic-engine-property
-                     :material {:plastic 20 :iron 150 :electronics 10}
-                     }
-     :basic-battery {:name     "Basic battery"
-                     :material {:iron 10 :plastic 20 :electronics 10 :lithium-ion 200}
-                     :battery  basic-battery-property
-                     }
-     :basic-miner   {:name     "basic miner"
-                     :material {:iron 300 :plastic 20 :electronics 10 :titanium 40}
-                     :miner    {:resources-per-second 1}}
-     :basic-storage {:name     "basic storage"
-                     :material {:plastic 200 :electronics 5}
-                     :storage  basic-storage-block-storage}}))
 (defn get-block-mass [block]
   (if (nil? block)
     0
-    (let [materials (:material block)] (reduce-kv #(+ % (* %3 (:weight (resources %2)))) 0 materials))))
-(get-block-mass (block-types :basic-core))
+    (get-weight-resource (let [key (:key block)]
+                           key))))
 (defn map-to-array2 [m]
   (let [kys (keys m)
         minx (reduce #(min % (:x %2)) 0 kys)

@@ -69,7 +69,6 @@
 
 (defn get-jump-energy-cost-info [ship position next-position]
   (let [mass (get-mass-ship ship)
-        shop ship
         jump-cost (jump-energy-cost position next-position mass)
         engine-power-info (get-total-engine-power ship)
         energy-output (:energy-output engine-power-info)
