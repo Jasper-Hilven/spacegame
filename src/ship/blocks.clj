@@ -3,23 +3,6 @@
 (use 'ship.storage)
 (use 'ship.mining)
 (use 'world.resource)
-(def resource-conversions
-  [
-   {:name "Create oxygen" :from {:CO2 20} :to {:02 20 :carbon 1}}
-   {:name "Create food" :from {:water 1 :carbon 1} :to {:food 2}}
-   {:name "Consume food" :from {:food 1 :O2 20} :to {:CO2 20 :water 1}}
-   {:name "Create plastic" :from {:oil 1} :to {:plastic 2}}
-   ])
-
-(def resistances
-  {:impact-resistance {:name "Impact resistance"}
-   :laser-resistance  {:name "Laser resistance"}
-   :heat-resistance   {:name "Heat resistance"}})
-
-(def low-resistance
-  {:impact-resistance 1
-   :laser-resistance  1
-   :heat-resistance   1})
 
 (defn vec2d [sx sy f]
   (mapv (fn [x] (mapv (fn [y] (f x y)) (range sx))) (range sy)))

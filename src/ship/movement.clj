@@ -64,7 +64,6 @@
             :best-power-efficiency     best-power-efficiency
             :efficiency-when-max-power efficiency-when-max-power
             })
-
     ))
 
 (defn get-jump-energy-cost-info [ship position next-position]
