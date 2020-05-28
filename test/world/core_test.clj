@@ -13,9 +13,6 @@
 (use 'world.resource)
 (use 'ship.crafting)
 (use 'ship.core)
-(deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 1 1))))
 
 (defn lol [a] (+ a 4))
 
@@ -43,11 +40,11 @@
       (try-add-to-storage (get-in resources [:basic-chassis :material]))
       (update-crafting-ship 1)))
 
+
 (deftest do-crafting
-  (testing "full crafting"
-    (is (get-crafting-list (build-crafting-scenario)) [{:conversion :basic-chassis :times 1}])
-    (is (get-ship-storage (build-crafting-scenario)) {:basic-chassis 1})
-    (is (get-crafting-loaded (build-crafting-scenario)) (get-weight-resource :basic-chassis))))
+    (is (= (get-crafting-list (build-crafting-scenario)) [{:conversion :basic-chassis :times 1}]))
+    (is (= (get-ship-storage (build-crafting-scenario)) {:basic-chassis 1}))
+    (is (= (get-crafting-loaded (build-crafting-scenario)) -55.0)))
 
 (defn run-all [] (run-tests))
 (run-all)

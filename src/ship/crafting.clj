@@ -3,14 +3,6 @@
 (use 'world.resource)
 (use 'ship.storage)
 (use 'debux.core)
-(def resource-conversions
-  [
-   {:name "Create oxygen" :from {:CO2 20} :to {:02 20 :carbon 1}}
-   {:name "Create food" :from {:water 1 :carbon 1} :to {:food 2}}
-   {:name "Consume food" :from {:food 1 :O2 20} :to {:CO2 20 :water 1}}
-   {:name "Create plastic" :from {:oil 1} :to {:plastic 2}}
-   ])
-
 
 (def crafting-start {:crafting-list [] :crafting-loaded 0})
 (defn get-amount-of-crafting-power [ship]
@@ -68,7 +60,6 @@
   (has-in-ship
     ship
     (get-resources-required-to-craft product-resource-name)))
-(defn decrease-crafting-loaded [ship block-crafted])
 (defn update-crafting-ship [ship dT]
   (let [updated-ship (update-crafting-loaded ship dT)]
     (if (ready-crafting updated-ship)
@@ -78,7 +69,7 @@
               (pop-one-from-crafting-list)
               (take-from-ship (get-resources-required-to-craft next-element-to-craft-name))
               (try-add-to-storage {next-element-to-craft-name 1})
-              (decrease-crafting-loaded (get-weight-resource next-element-to-craft-name)))
+              (decrease-crafting-loaded (/ (get-weight-resource next-element-to-craft-name) 10)))
           updated-ship)
         updated-ship)
       updated-ship)))
