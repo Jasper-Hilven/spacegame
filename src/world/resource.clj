@@ -68,9 +68,11 @@
     (reduce-kv #(assoc % %2 (assoc %3 :key %2)) {} unkeyed)))
 
 (defn get-resource [coll resource] (or (resource coll) 0))
-(defn simplify-resources [container ] (reduce-kv #(if (= 0 %3) % (assoc % %2 %3)) {} container))
+(defn simplify-resources [container] (reduce-kv #(if (= 0 %3) % (assoc % %2 %3)) {} container))
 (defn add-resources [add1 add2] (simplify-resources (reduce-kv #(assoc % %2 (+ (get-resource add1 %2) %3)) add1 add2)))
-(defn resources-contains [container containee] (reduce-kv #(and % (>= (container %2) %3)) true containee))
+(defn resources-contains [container containee]
+  (reduce-kv #(and % (>= (get-resource container %2) %3)) true containee))
+
 (defn subtract-resources [container containee] (simplify-resources (reduce-kv #(assoc % %2 (- (get-resource container %2) %3)) container containee)))
 (add-resources {:iron 1 :water 1} {:iron 1})
 (subtract-resources {:iron 1 :water 1} {:iron 1})

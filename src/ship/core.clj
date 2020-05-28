@@ -21,13 +21,3 @@
 
 (is-valid-structure (:structure (start-ship)))
 
-(def ship (start-ship))
-
-(get-jump-info ship start-pos next-planet)
-
-(get-mass-ship (try-add-to-storage ship {:oil 0}))
-(get-ship-max-storage ship)
-(get-mass-ship (try-add-to-storage ship {:basic-storage 1}))
-(get-amount-of-crafting-power ship)
-
-(update-crafting-loaded ship 1)
