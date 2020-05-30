@@ -7,6 +7,7 @@
 (use 'debux.core)
 (use 'world.position)
 (use 'ship.storage)
+(use 'ship.basics)
 (use 'ship.recipies)
 (use 'world.resource)
 (use 'ship.crafting)
@@ -19,5 +20,5 @@
 
 (defn start-ship [] (build-ship start-ship-recipe start-pos))
 
-(is-valid-structure (:structure (start-ship)))
+(is-valid-structure (get-structure (start-ship)))
 

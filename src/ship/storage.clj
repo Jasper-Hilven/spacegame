@@ -9,7 +9,7 @@
   (reduce-kv #(add-storage-capacities (get-block-storage %3) %)
              empty-block-storage-capacity
              structure))
-(defn get-ship-max-storage [ship] (calculate-ship-storage-capacity (:structure ship)))
+(defn get-ship-max-storage [ship] (calculate-ship-storage-capacity (get-structure ship)))
 (defn get-ship-storage [ship] (get-in ship [:storage] {}))
 (defn get-player-ship-storage [game] (get-ship-storage (get-player-ship game)))
 (defn get-storage-left [ship]
@@ -25,6 +25,10 @@
                              (add-resources resources (get-ship-storage ship))
                              (get-ship-storage ship))]
     (assoc ship :storage ship-new-resources)))
+(defn try-add-single-to-storage [ship resource-name]
+  (try-add-to-storage ship {resource-name 1}))
 (defn take-from-ship [ship resources]
   (assoc ship :storage (subtract-resources (get-ship-storage ship) resources)))
 (defn has-in-ship [ship resources] (resources-contains (get-ship-storage ship) resources))
+(defn has-single-in-ship [ship resource-name] (resources-contains (get-ship-storage ship) {resource-name 1}))
+(defn take-single-resource [ship resource-name] (take-from-ship ship {resource-name 1}))

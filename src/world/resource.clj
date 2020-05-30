@@ -73,6 +73,7 @@
 (defn resources-contains [container containee]
   (reduce-kv #(and % (>= (get-resource container %2) %3)) true containee))
 
+
 (defn subtract-resources [container containee] (simplify-resources (reduce-kv #(assoc % %2 (- (get-resource container %2) %3)) container containee)))
 (add-resources {:iron 1 :water 1} {:iron 1})
 (subtract-resources {:iron 1 :water 1} {:iron 1})
@@ -102,7 +103,7 @@
 (defn forms-contains [container containee] (let [subtracted (subtract-forms container containee)
                                                  contains (reduce-kv #(and % (>= %3 0)) true subtracted)] contains))
 
-
+(defn get-resource-by-name [name] (name resources))
 
 
 (def subtract-test (subtract-forms {:solid 10} {:solid 5}))

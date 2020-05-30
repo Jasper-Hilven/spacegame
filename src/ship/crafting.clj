@@ -3,10 +3,10 @@
 (use 'world.resource)
 (use 'ship.storage)
 (use 'debux.core)
-
+(use 'ship.basics)
 (def crafting-start {:crafting-list [] :crafting-loaded 0})
 (defn get-amount-of-crafting-power [ship]
-  (reduce-kv #(+ % (get-in %3 [:crafting :power] 0)) 0 (:structure ship)))
+  (reduce-kv #(+ % (get-in %3 [:crafting :power] 0)) 0 (get-structure ship)))
 
 (defn get-crafting-loaded [ship] (get-in ship [:crafting :crafting-loaded] -1))
 (defn set-crafting-loaded [ship loaded] (assoc-in ship [:crafting :crafting-loaded] loaded))

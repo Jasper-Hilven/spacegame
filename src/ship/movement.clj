@@ -6,6 +6,7 @@
 (use 'ship.energy)
 (use 'ship.basics)
 (use 'ship.storage)
+
 (defn jump-energy-cost [position next-position mass]
   (let
     [diff (diff-position position next-position)]
@@ -13,7 +14,7 @@
     ))
 
 (defn get-mass-ship [ship]
-  (let [blocks (:structure ship)
+  (let [blocks (get-structure ship)
         mass-blocks (reduce-kv (fn [r _ bl] (+ r (get-block-mass bl))) 0 blocks)
         mass-resources (get-weight-resources (get-ship-storage ship))]
     (+ mass-resources mass-blocks)))
@@ -49,7 +50,7 @@
                            :max-energy-output max-energy-output
                            :max-energy-input  max-energy-input
                            })
-        basic-total-power-data (reduce-kv reductor initial-power-data (:structure ship))
+        basic-total-power-data (reduce-kv reductor initial-power-data (get-structure ship))
         energy-output (:energy-output basic-total-power-data)
         energy-input (:energy-input basic-total-power-data)
         max-energy-output (:max-energy-output basic-total-power-data)

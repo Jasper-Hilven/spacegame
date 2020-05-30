@@ -10,7 +10,6 @@
 
 
 (defn get-range [n] (->> n inc (range (- n)) vec))
-(defn fits-requirement [block level])
 (defn get-circled-positions [radius]
   (for [
         x (get-range radius)

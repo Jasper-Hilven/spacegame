@@ -29,7 +29,7 @@
     {}
 
     arr))
-
+(defn get-block-type [block] (:key block))
 (array2-to-map [[1 2 3]
                 [1 2 3]])
 (map-to-array2 {{:x 1 :y 2} "s" {:x 2 :y 3} "p"})
