@@ -1,56 +1,28 @@
-(ns world.core-test
+(ns actor.core-test
   (:require [clojure.test :refer :all]
             [world.core :refer :all]))
-
-(use '[ship.blocks :only [array2-to-map]])
-(use '[ship.chassis :only [is-valid-structure]])
-(use '[ship.energy :only [get-initial-energy]])
-(use '[ship.movement :only [get-mass-ship get-total-engine-power get-jump-energy-cost-info get-jump-info]])
+(use 'actor.needs)
 (use 'debux.core)
-(use 'world.position)
-(use 'ship.storage)
-(use 'ship.recipies)
-(use 'world.resource)
-(use 'ship.crafting)
-(use 'ship.core)
-(use 'ship.building)
 
-(def order [:solar-system :galaxy :universe])
-(def ship (start-ship))
-
-(get-jump-info ship start-pos next-planet) :invalid
-
-(get-mass-ship (try-add-to-storage ship {:oil 0}))
-(get-ship-max-storage ship)
-(get-mass-ship (try-add-to-storage ship {:basic-storage 1}))
-(get-amount-of-crafting-power ship)
-
-(deftest crafting-list
+(deftest success
   (testing "set and get"
-    (is (let [crafting-list (-> ship
-                                (set-crafting-list [{:conversion :basic-chassis :times 1}])
-                                (get-crafting-list)
-                                )]
-          crafting-list) [{:conversion :basic-chassis :times 1}])))
+    (is (= true true))))
+(def updated-person  (update-person start-person-needs 500))
+(def tired-person  (update-person updated-person 500))
 
-(defn build-crafting-scenario []
-  (-> ship
-      (set-crafting-list [{:conversion :basic-chassis :times 2}])
-      (try-add-to-storage (get-in resources [:basic-chassis :material]))
-      (update-crafting-ship 1)))
+(def very-tired-person  (update-person tired-person 500))
+(deftest needs
+  (is (= (get-walking-speed start-person-needs) 1.0))
+  (is (> (get-walking-speed updated-person) 0.8))
+  (is (< (get-walking-speed updated-person) 1.0))
+  (is (> (get-walking-speed tired-person) 0.3))
+  (is (< (get-walking-speed tired-person) 0.5))
+  (is (>= (get-walking-speed very-tired-person) 0.1))
+  (is (< (get-walking-speed very-tired-person) 0.2)))
 
-
-(deftest do-crafting
-  (is (= (get-crafting-list (build-crafting-scenario)) [{:conversion :basic-chassis :times 1}]))
-  (is (= (get-ship-storage (build-crafting-scenario)) {:basic-chassis 1}))
-  (is (= (get-crafting-loaded (build-crafting-scenario)) -55.0)))
-
-
-(let [ship-with-block-storage (try-add-to-storage ship {:basic-storage 1})]
-  (deftest do-building
-    (is (= false (can-build-block ship-with-block-storage {:x 0 :y 0} :basic-storage)))
-    (is (= false (can-build-block ship {:x 1 :y 1} :basic-storage)))
-    (is (= true (can-build-block ship-with-block-storage {:x 1 :y 1} :basic-storage)))))
+(def object-stats-to-use {:toilet 100})
+(get-stat object-stats-to-use :toilet)
+(update-person-stats-with-object (update-person start-person-needs 1000) object-stats-to-use 14)
 
 (defn run-all [] (run-tests))
 

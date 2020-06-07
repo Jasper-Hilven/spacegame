@@ -5,7 +5,12 @@
   (:use world.position)
   (:use ship.basics)
   (:use ship.movement)
-  (:use ship.mining))
+  (:use ship.mining)
+  (:import [com.badlogic.gdx.backends.lwjgl LwjglApplication]
+           [org.lwjgl.input Keyboard])
+  (:gen-class)
+  (:require [play-clj.core :refer :all]
+            [play-clj.ui :refer :all]))
 
 (use 'debux.core)
 

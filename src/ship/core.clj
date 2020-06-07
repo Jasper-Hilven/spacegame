@@ -16,7 +16,8 @@
     {:structure structure
      :energy    (get-initial-energy structure)
      :position position
-     :crafting crafting-start}))
+     :crafting crafting-start
+     :crew }))
 
 (defn start-ship [] (build-ship start-ship-recipe start-pos))
 

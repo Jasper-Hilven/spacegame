@@ -128,7 +128,7 @@
 
     (-> game
         (update-position-player-ship (:new-position jump-info))
-        (set-ship-energy (:new-energy jump-info)))
+        (set-ship-energy-in-game (:new-energy jump-info)))
     ))
 
 

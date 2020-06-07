@@ -14,7 +14,7 @@
                   :system 0
                   :planet 0})
 (defn diff-position [p0 p1]
-  (let [distanceF #(Math/abs (- (% p0) (% p1)))
+  (let [distanceF #(Math/abs ^int (- (% p0) (% p1)))
         planet-diff (distanceF :planet)
         system-diff (distanceF :system)
         galaxy-diff (distanceF :galaxy)]

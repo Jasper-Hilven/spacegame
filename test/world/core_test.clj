@@ -13,8 +13,7 @@
 (use 'world.resource)
 (use 'ship.crafting)
 (use 'ship.core)
-
-(defn lol [a] (+ a 4))
+(use 'ship.building)
 
 (def order [:solar-system :galaxy :universe])
 (def ship (start-ship))
@@ -42,9 +41,19 @@
 
 
 (deftest do-crafting
-    (is (= (get-crafting-list (build-crafting-scenario)) [{:conversion :basic-chassis :times 1}]))
-    (is (= (get-ship-storage (build-crafting-scenario)) {:basic-chassis 1}))
-    (is (= (get-crafting-loaded (build-crafting-scenario)) -55.0)))
+  (is (= (get-crafting-list (build-crafting-scenario)) [{:conversion :basic-chassis :times 1}]))
+  (is (= (get-ship-storage (build-crafting-scenario)) {:basic-chassis 1}))
+  (is (= (get-crafting-loaded (build-crafting-scenario)) -55.0)))
+
+
+(let [ship-with-block-storage (try-add-to-storage ship {:basic-storage 1})]
+  (deftest do-building
+    (is (= false (can-build-block ship-with-block-storage {:x 0 :y 0} :basic-storage)))
+    (is (= false (can-build-block ship {:x 1 :y 1} :basic-storage)))
+    (is (= true (can-build-block ship-with-block-storage {:x 1 :y 1} :basic-storage)))))
 
 (defn run-all [] (run-tests))
+
+
+
 (run-all)
