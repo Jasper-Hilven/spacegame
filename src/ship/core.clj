@@ -11,13 +11,14 @@
 (use 'ship.recipies)
 (use 'world.resource)
 (use 'ship.crafting)
+(use 'actor.crew)
 (defn build-ship [recipe position]
   (let [structure (array2-to-map (mapv #(mapv resources %) recipe))]
     {:structure structure
      :energy    (get-initial-energy structure)
      :position position
      :crafting crafting-start
-     :crew }))
+     :crew (start-crew)}))
 
 (defn start-ship [] (build-ship start-ship-recipe start-pos))
 

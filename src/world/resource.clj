@@ -73,7 +73,8 @@
                                        :interactive {:location       :on
                                                      :interact-stats {:rested 20}
                                                      :start-delay    20
-                                                     :end-delay      10}}
+                                                     :end-delay      10
+                                                     :stop-when-full :rested}}
                  :basic-toilet        {:name        "toilet"
                                        :material    {:plastic 40 :iron 10}
                                        :form        :block
@@ -83,7 +84,8 @@
                                                      :interact-stats {:toilet 100 :hygiene -10}
                                                      :resource-usage {:water 1}
                                                      :start-delay    10
-                                                     :end-delay      5}}
+                                                     :end-delay      5
+                                                     :stop-when-full :toilet}}
                  :basic-shower        {:name        "shower"
                                        :material    {:plastic 20 :iron 20}
                                        :form        :block
@@ -93,7 +95,8 @@
                                                      :interact-stats {:hygiene 50}
                                                      :resource-usage {:water 5}
                                                      :start-delay    20
-                                                     :end-delay      10}}
+                                                     :end-delay      10
+                                                     :stop-when-full :hygiene}}
                  :basic-eating-stand  {:name        "eating stand"
                                        :material    {:plastic 20 :iron 20}
                                        :form        :block
@@ -103,7 +106,8 @@
                                                      :interact-stats {:eaten 10}
                                                      :resource-usage {:food 1}
                                                      :start-delay    10
-                                                     :end-delay      5}}
+                                                     :end-delay      5
+                                                     :stop-when-full :eaten}}
                  :basic-game-computer {:name        "game computer"
                                        :material    {:plastic 10 :electronics 50 :iron 20}
                                        :form        :block
@@ -113,7 +117,8 @@
                                                      :interact-stats {:entertained 10}
                                                      :energy-usage   1
                                                      :start-delay    10
-                                                     :end-delay      5}}
+                                                     :end-delay      5
+                                                     :stop-when-full :entertained}}
                  :basic-firmery       {:name        "basic firmery"
                                        :material    {:plastic 10 :electronics 100 :iron 50}
                                        :form        :block
@@ -125,6 +130,7 @@
                                                      :resource-usage {:O2 3}
                                                      :start-delay    10
                                                      :end-delay      10
+                                                     :stop-when-full :health
                                                      }}}]
     (reduce-kv #(assoc % %2 (assoc %3 :key %2)) {} unkeyed)))
 
