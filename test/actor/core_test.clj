@@ -7,9 +7,11 @@
 (use 'ship.basics)
 (use 'ship.core)
 (use 'actor.crew)
+(use 'actor.walking)
 (deftest success
   (testing "set and get"
     (is (= true true))))
+
 (def updated-person (update-person-needs start-person-needs 500))
 (def tired-person (update-person-needs updated-person 500))
 
@@ -55,12 +57,15 @@
     (update-person-usage 0 0)
     (update-person-usage 0 60))
 
-(deftest person-uses-object
-  (is ()))
+(next-walkable-positions (:structure ship-with-bunk) {:x 3 :y 7})
+(get-walkable-froms (:structure ship-with-bunk)
+                    )
 
+(get-edges-of-structure (:structure ship-with-bunk))
+
+(def memo-edge (memoize get-edges-of-structure))
+(time (memo-edge (get-structure (start-ship))))
 
 (defn run-all [] (run-tests))
-
-
 
 (run-all)

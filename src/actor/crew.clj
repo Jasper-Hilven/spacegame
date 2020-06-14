@@ -1,11 +1,10 @@
 (ns actor.crew)
-(use 'actor.needs)
 (use 'ship.basics)
 (use 'ship.energy)
 (use 'ship.storage)
 (use 'world.resource)
 
-(defn start-crew [] {0 {
+(defn start-crew [start-person-needs] {0 {
                         :name                "jos"
                         :needs               start-person-needs
                         :position            {:x 0 :y 0}

@@ -17,6 +17,9 @@
 (defn increment-using-state-counter [person dTime]
   (set-using-state-counter person (+ dTime (get-counter person))))
 (defn get-using-position [person] (:using person))
+(defn set-using-position [person position] (assoc person :using position))
+(defn set-using-position-ship [ship person-id position]
+  (update-person ship person-id #(set-using-position % position)))
 (defn get-using-position-ship [ship person-id]
   (get-using-position (get-person ship person-id)))
 (defn get-using-block-ship [ship person-id]
@@ -26,6 +29,7 @@
 
 (defn get-interact-stats-block [block]
   (get-in block [:interactive :interact-stats] nil))
+
 (defn get-stop-when-full [block]
   (get-in block [:interactive :stop-when-full] nil))
 
@@ -38,13 +42,16 @@
 (defn update-person-end-using-object [person end-delay dTime]
   (if
     (>= (get-counter person) end-delay)
-    (-> person (set-using-state nil) (set-using-state-counter 0))
+    (-> person
+        (set-using-position nil)
+        (set-using-state nil)
+        (set-using-state-counter 0))
     (increment-using-state-counter person dTime)))
 
 (defn is-useful-to-do [ship person-id]
   (let [block (get-using-block-ship ship person-id)
         optimizing (and block (get-stop-when-full block))
-        is-full  (or (nil? optimizing) (>= (get-person-need-ship ship person-id optimizing) 1))]
+        is-full (or (nil? optimizing) (>= (get-person-need-ship ship person-id optimizing) 1))]
     (not is-full)))
 
 (defn update-person-ship-using-object [ship person-id using-position dTime]

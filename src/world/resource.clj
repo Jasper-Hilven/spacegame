@@ -31,6 +31,8 @@
                                        :chassis-level 1
                                        :material      {:plastic 100 :iron 100}
                                        :form          :block
+                                       :walkable      true
+                                       :walk-speed    1
                                        }
                  :basic-core          {:name          "Basic core"
                                        :is-core       true
@@ -119,6 +121,11 @@
                                                      :start-delay    10
                                                      :end-delay      5
                                                      :stop-when-full :entertained}}
+                 :basic-hallway       {:name       "basic hallway"
+                                       :material   {:plastic 10 :iron 10}
+                                       :form       :block
+                                       :walkable   true
+                                       :walk-speed 1}
                  :basic-firmery       {:name        "basic firmery"
                                        :material    {:plastic 10 :electronics 100 :iron 50}
                                        :form        :block
