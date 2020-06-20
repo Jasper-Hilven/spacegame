@@ -6,26 +6,42 @@
 (use 'world.resource)
 (use 'actor.crew)
 (use 'debux.core)
+(use 'actor.actionqueue)
 (def using-states [:beginning :using :ending])
+(def start-actor-with-uses
+  {:using               nil
+   :using-state         nil
+   :using-state-counter 0
+   })
 
 (defn get-counter [person]
   (get-in person [:using-state-counter] 0))
 
 (defn set-using-state [person v] (assoc person :using-state v))
+
 (defn get-using-state [person] (:using-state person))
+
 (defn set-using-state-counter [person v] (assoc person :using-state-counter v))
+
 (defn increment-using-state-counter [person dTime]
   (set-using-state-counter person (+ dTime (get-counter person))))
+
 (defn get-using-position [person] (:using person))
+
 (defn set-using-position [person position] (assoc person :using position))
+
 (defn set-using-position-ship [ship person-id position]
   (update-person ship person-id #(set-using-position % position)))
+
 (defn get-using-position-ship [ship person-id]
   (get-using-position (get-person ship person-id)))
+
 (defn get-using-block-ship [ship person-id]
   (let [position (get-using-position-ship ship person-id)]
     (and position (get-block-at-position ship position))))
 
+(defn is-using-object? [ship person-id]
+  (not (any? (get-using-position-ship ship person-id))))
 
 (defn get-interact-stats-block [block]
   (get-in block [:interactive :interact-stats] nil))
@@ -45,7 +61,8 @@
     (-> person
         (set-using-position nil)
         (set-using-state nil)
-        (set-using-state-counter 0))
+        (set-using-state-counter 0)
+        (drop-current-action))
     (increment-using-state-counter person dTime)))
 
 (defn is-useful-to-do [ship person-id]
@@ -77,12 +94,10 @@
           (not using-position)
           {:ship ship :person person}
           (let [block (get-block-at-position ship using-position)
-                interactive-block (:interactive block)
-                using-state-person (:using-state person)
-                start-delay (get-in interactive-block [:start-delay] 0)
-                end-delay (get-in interactive-block [:end-delay] 0)
+                start-delay (get-in (:interactive block) [:start-delay] 0)
+                end-delay (get-in (:interactive block) [:end-delay] 0)
                 ]
-            (case using-state-person
+            (case (:using-state person)
               nil {:ship ship :person (set-using-state person :beginning)}
               :beginning
               {:ship   ship

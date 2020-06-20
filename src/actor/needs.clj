@@ -4,7 +4,7 @@
 (def all-stats [:eaten :rested :entertained :hygiene :health :toilet])
 (def start-person-needs
   (reduce #(assoc % %2 1) {} all-stats))
-
+(def starting-actor-with-needs {:needs start-person-needs})
 (def example-schedule
   [{:from 0 :to 23 :do :badroom}])
 
@@ -42,15 +42,15 @@
 (defn get-person-need [person need] (get-in person [:needs need]))
 (defn get-person-need-ship [ship person-id need] (get-person-need (get-person ship person-id) need))
 
-  (defn update-person-stats-with-object [person-stats object-stats time]
-    (let [increase (assoc-in-for-stat #(* (get-stat object-stats %) time game-day-per-real-second))]
-      (add-stats increase person-stats)))
-  (defn update-person-with-object [person object-stats time]
-    (assoc person :needs (update-person-stats-with-object (:needs person) object-stats time)))
+(defn update-person-stats-with-object [person-stats object-stats time]
+  (let [increase (assoc-in-for-stat #(* (get-stat object-stats %) time game-day-per-real-second))]
+    (add-stats increase person-stats)))
+(defn update-person-with-object [person object-stats time]
+  (assoc person :needs (update-person-stats-with-object (:needs person) object-stats time)))
 
-  (defn get-walking-speed [stats]
-    (reduce #(let [bad-need (- 1 (%2 stats))]
-               (max 0.1
-                    (- % (* 0.3 bad-need bad-need bad-need))))
-            1
-            all-stats))
+(defn get-walking-speed [stats]
+  (reduce #(let [bad-need (- 1 (%2 stats))]
+             (max 0.1
+                  (- % (* 0.3 bad-need bad-need bad-need))))
+          1
+          all-stats))

@@ -47,7 +47,7 @@
      [_ _ _ _ o o c o o o o o c o o _ _ _ _]
      [_ _ _ _ s s b b o s o b b s s _ _ _ _]
      [_ _ _ s s s b b o x o b b s s s _ _ _]
-     [_ _ s o o o c o o o o o c o o o s _ _]
+     [_ _ s o o c o o o o o o c o o o s _ _]
      [_ _ _ s o m m m m m m m m m o s _ _ _]
      [_ _ _ _ m _ _ _ _ _ _ _ _ _ m _ _ _ _]
      [_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _]

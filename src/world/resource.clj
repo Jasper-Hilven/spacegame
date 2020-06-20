@@ -28,7 +28,7 @@
                  :lithium-ion         {:name "Lithium Ion" :weight 3 :form :solid}
 
                  :basic-chassis       {:name          "Basic Chassis"
-                                       :chassis-level 1
+                                       :chassis-level 2
                                        :material      {:plastic 100 :iron 100}
                                        :form          :block
                                        :walkable      true
