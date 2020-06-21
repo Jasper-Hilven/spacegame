@@ -18,10 +18,15 @@
   (get-in person [:using-state-counter] 0))
 
 (defn set-using-state [person v] (assoc person :using-state v))
+(defn set-using-state-ship [ship person-id v]
+  (update-person ship person-id #(assoc % :using-state v)))
 
 (defn get-using-state [person] (:using-state person))
+(defn get-using-state-ship [ship person-id] (:using-state (get-person ship person-id)))
 
 (defn set-using-state-counter [person v] (assoc person :using-state-counter v))
+(defn set-using-state-counter-ship [ship person-id v]
+  (update-person ship person-id #(assoc % :using-state-counter v)))
 
 (defn increment-using-state-counter [person dTime]
   (set-using-state-counter person (+ dTime (get-counter person))))
@@ -41,13 +46,14 @@
     (and position (get-block-at-position ship position))))
 
 (defn is-using-object? [ship person-id]
-  (not (any? (get-using-position-ship ship person-id))))
+  (not (nil? (get-using-position-ship ship person-id))))
 
 (defn get-interact-stats-block [block]
   (get-in block [:interactive :interact-stats] nil))
 
 (defn get-stop-when-full [block]
   (get-in block [:interactive :stop-when-full] nil))
+
 
 (defn update-person-begin-using-object [person start-delay dTime]
   (if
@@ -74,40 +80,62 @@
 (defn update-person-ship-using-object [ship person-id using-position dTime]
   (let [block (get-block-at-position ship using-position)
         interactive-block (:interactive block)
-        person (get-person ship person-id)
         required-resources (mult-resources (get-in interactive-block [:resource-usage]) dTime)
         required-energy (* dTime (get-in interactive-block [:energy-usage] 0))]
     (if (and
           (has-energy ship required-energy)
           (has-in-ship ship required-resources)
           (is-useful-to-do ship person-id))
-      {:ship   (-> ship (take-energy required-energy) (take-from-ship required-resources))
-       :person (update-person-with-object person (:interact-stats interactive-block) dTime)}
-      {:ship ship :person (-> person (set-using-state :ending) (set-using-state-counter 0))}
+
+      (-> ship (take-energy required-energy) (take-from-ship required-resources)
+          (update-person-with-object-ship person-id (:interact-stats interactive-block) dTime))
+
+      (-> ship
+          (set-using-state-counter-ship person-id 0)
+          (set-using-state-ship person-id :ending))
       )))
+(defn get-current-block-delay [ship person-id delay-type]
+  (get-in
+    (:interactive
+      (get-block-at-position
+        ship
+        (get-using-position-ship ship person-id))) [delay-type] 0))
+(defn get-current-block-start-delay [ship person-id]
+  (get-current-block-delay ship person-id :start-delay))
+(defn get-current-block-end-delay [ship person-id]
+  (get-current-block-delay ship person-id :end-delay))
+
+(defn update-person-usage-beginning [ship person-id dTime]
+  (update-person
+    ship person-id
+    #(update-person-begin-using-object
+       %
+       (get-current-block-start-delay ship person-id)
+       dTime)))
+(defn update-person-usage-ending [ship person-id dTime]
+  (update-person
+    ship person-id
+    #(update-person-end-using-object
+       %
+       (get-current-block-end-delay ship person-id)
+       dTime)))
+(defn update-person-usage-using [ship person-id dTime]
+  (update-person-ship-using-object
+    ship person-id
+    (get-using-position-ship ship person-id)
+    dTime))
+(defn update-person-usage-no-state [ship person-id]
+  (update-person
+    ship person-id
+    #(set-using-state % :beginning)))
 
 (defn update-person-usage [ship person-id dTime]
-  (let [person (get-person ship person-id)
-        using-position (:using person)
-        updated-person-and-ship
-        (if
-          (not using-position)
-          {:ship ship :person person}
-          (let [block (get-block-at-position ship using-position)
-                start-delay (get-in (:interactive block) [:start-delay] 0)
-                end-delay (get-in (:interactive block) [:end-delay] 0)
-                ]
-            (case (:using-state person)
-              nil {:ship ship :person (set-using-state person :beginning)}
-              :beginning
-              {:ship   ship
-               :person (update-person-begin-using-object person start-delay dTime)}
-              :using (update-person-ship-using-object ship person-id using-position dTime)
-              :ending
-              {:ship   ship
-               :person (update-person-end-using-object person end-delay dTime)}
-              )))]
-    (set-person
-      (:ship updated-person-and-ship)
-      person-id
-      (:person updated-person-and-ship))))
+  (if
+    (not (get-using-position-ship ship person-id))
+    ship
+    (case (:using-state (get-person ship person-id))
+      :beginning (update-person-usage-beginning ship person-id dTime)
+      :using (update-person-usage-using ship person-id dTime)
+      :ending (update-person-usage-ending ship person-id dTime)
+      (update-person-usage-no-state ship person-id)
+      )))

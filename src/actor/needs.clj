@@ -39,6 +39,8 @@
   (assoc-in-for-stat #(min 1 (+ (get-stat first %) (get-stat second %)))))
 
 (defn set-person-need [person need value] (assoc-in person [:needs need] value))
+(defn set-person-need-ship [ship person-id need value]
+  (update-person ship person-id #(assoc-in % [:needs need] value)))
 (defn get-person-need [person need] (get-in person [:needs need]))
 (defn get-person-need-ship [ship person-id need] (get-person-need (get-person ship person-id) need))
 
@@ -47,6 +49,8 @@
     (add-stats increase person-stats)))
 (defn update-person-with-object [person object-stats time]
   (assoc person :needs (update-person-stats-with-object (:needs person) object-stats time)))
+(defn update-person-with-object-ship [ship person-id object-stats time]
+  (update-person ship person-id  #(update-person-with-object % object-stats time)))
 
 (defn get-walking-speed [stats]
   (reduce #(let [bad-need (- 1 (%2 stats))]

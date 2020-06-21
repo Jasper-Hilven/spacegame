@@ -49,12 +49,12 @@
 (def ship-with-bunk-and-hallway-person-in-bunk (-> ship-with-bunk-and-hallway
                                                    (set-position-person-ship 0 {:x 1 :y 0})))
 (def ship-with-bunk-and-hallway-person-in-hallway
-  (-> ship-with-bunk-and-hallway (set-position-person-ship 0 {:x 0 :y 0})))
+  (-> ship-with-bunk-and-hallway (set-position-person-ship 0 {:x 1 :y 0})))
 
 (def ship-with-bunk-person-using-bunk
-  (-> ship-with-bunk-and-hallway-person-in-hallway
+  (-> ship-with-bunk-and-hallway
       (update-person 0 #(assoc % :using {:x 0 :y 0}))
-      (update-person 0 #(set-person-need % :rested 0.5))))
+      (set-person-need-ship 0 :rested 0.5)))
 
 (deftest person-continue-using-object
   (is (> (get-in (update-person-ship-using-object ship-with-bunk-person-using-bunk 0 {:x 0 :y 0} 1)
@@ -71,7 +71,10 @@
 (get-walkable-froms (:structure ship-with-bunk-and-hallway))
 
 (def person-wanting-to-do-action
-  (add-use-block-at-action-ship ship-with-bunk-and-hallway-person-in-hallway 0 {:x 0 :y 0} :basic-bunk))
+  (-> ship-with-bunk-and-hallway-person-in-hallway
+      (set-person-need-ship 0 :rested 0.5)
+      (add-use-block-at-action-ship 0 {:x 0 :y 0} :basic-bunk)))
+
 (def walking-towards-next-action
   (set-walking-towards-next-action person-wanting-to-do-action 0))
 (def person-not-walking-towards-next-action
@@ -85,6 +88,37 @@
 (deftest person-update-walking
   (update-person-walking walking-towards-next-action 0 1))
 
+
+(update-person-ship-action person-wanting-to-do-action 0 0.5)
+(get-position-person-ship person-wanting-to-do-action 0)
+(is-walking-somewhere? person-wanting-to-do-action 0)
+(get-walking-path person-wanting-to-do-action 0)
+(is-using-object? person-wanting-to-do-action 0)
+(-> person-wanting-to-do-action
+    (update-person-ship-action 0 0)
+    (update-person-ship-action 0 0.9)
+    (update-person-ship-action 0 1)
+    (update-person-ship-action 0 1)
+    (update-person-ship-action 0 1)
+    (update-person-ship-action 0 20)
+    (update-person-ship-action 0 1)
+    (update-person-ship-action 0 200)
+    (update-person-ship-action 0 1)
+    (update-person-ship-action 0 100)
+    (update-person-ship-action 0 1)
+    ;(is-using-object? 0)
+    )
+
+(update-person-begin-using-object {:using-state :beginning } 20 1)
+
+(get-counter {:using-state :beginning :using {:x 0 :y 0}})
+(-> {:using-state :beginning :using {:x 0 :y 0}}
+    (update-person-begin-using-object 1 2)
+    (update-person-begin-using-object 1 2)
+    )
+
+(deftest person-walks-to-bed-and-sleeps
+  (update-person-ship-action person-wanting-to-do-action 0 1))
 
 
 

@@ -9,7 +9,7 @@
                           :position {:x 0 :y 0}
                           })
 
-(defn get-person [ship person-id] (get-in ship [:crew person-id] ship))
+(defn get-person [ship person-id] (get-in ship [:crew person-id]))
 (defn update-person [ship person-id update-func]
   (assoc-in ship [:crew person-id]
             (update-func (get-in ship [:crew person-id]))))
