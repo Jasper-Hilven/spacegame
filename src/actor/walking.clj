@@ -5,6 +5,7 @@
 (use 'ship.basics)
 (use 'actor.crew)
 (use 'actor.position)
+(use 'debux.core)
 (def start-person-with-walking {:walking '()})
 (def example-person-with-walking-path {:walking '({:x 0 :y 1} {:x 0 :y 2})})
 
@@ -41,11 +42,16 @@
       (is-not-walking-somewhere? ship person-id)
       {:ship ship :done-walking true}
 
-      (nil? position) {:ship ship :done-walking true :error "no position"}
+      (not (is-walkable-at-position-ship ship towards))
+      {:ship ship :done-walking true :error :tile-no-longer-walkable}
+
+      (nil? position)
+      {:ship ship :done-walking true :error :no-position}
+
       (= position towards)
       (update-person-walking (drop-walking-towards-first-tile ship person-id) person-id movement)
 
-      (<=  movement 0)
+      (<= movement 0)
       {:ship ship :done-walking false}
 
       :else
@@ -55,17 +61,6 @@
             ship-person-new-position (set-position-person-ship ship person-id new-position)]
         (update-person-walking ship-person-new-position person-id movement-left))
       )))
-
-(def ship-with-person {:crew {0 {:position {:x 0 :y 0}}}})
-(def ship-with-person-walking-to-position {:crew {0 {:position {:x 0 :y 0} :walking '({:x 0 :y 0})}}})
-(def ship-with-person-walking-to-next-position {:crew {0 {:position {:x 0 :y 0} :walking '({:x 0 :y 1})}}})
-(def ship-with-person-walking-to-away-position {:crew {0 {:position {:x 0 :y 0} :walking '({:x 0 :y 0} {:x 0 :y 1} {:x 0 :y 2} {:x 0 :y 3})}}})
-(update-person-walking ship-with-person 0 1)
-
-(update-person-walking ship-with-person-walking-to-position 0 1)
-(update-person-walking ship-with-person-walking-to-next-position 0 1)
-(update-person-walking ship-with-person-walking-to-next-position 0 0.1)
-(update-person-walking ship-with-person-walking-to-away-position 0 2.1)
 
 
 

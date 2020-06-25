@@ -1,12 +1,7 @@
 (ns actor.crew)
-(use 'ship.basics)
-(use 'ship.energy)
-(use 'ship.storage)
-(use 'world.resource)
 
 (def start-person-basics {:id       0
                           :name     "jos"
-                          :position {:x 0 :y 0}
                           })
 
 (defn get-person [ship person-id] (get-in ship [:crew person-id]))

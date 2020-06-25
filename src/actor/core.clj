@@ -1,19 +1,21 @@
-(ns actor.core)
-(use 'actor.actionqueue)
-(use 'actor.needs)
-(use 'actor.crew)
-(use 'actor.walking)
-(use 'actor.use-object)
+(ns actor.core
+  (:require [actor.actionqueue :as aq]
+            [actor.needs :as n]
+            [actor.crew :as c]
+            [actor.walking :as w]
+            [actor.use-object :as uo]
+            [actor.position :as p]))
+
 (def crew-member
   (reduce #(into % %2)
-          start-person-basics
-          [
-           starting-actor-with-actions
-           starting-actor-with-needs
-           start-actor-with-uses
-           start-person-with-walking]
+          c/start-person-basics
+          [p/start-person-position
+           aq/starting-actor-with-actions
+           n/starting-actor-with-needs
+           uo/start-actor-with-uses
+           w/start-person-with-walking]
           ))
 
 
-(defn start-crew [start-person-needs]
+(defn start-crew []
   {0 crew-member})

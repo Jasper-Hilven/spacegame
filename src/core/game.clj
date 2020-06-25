@@ -20,7 +20,7 @@
    :ship     (start-ship)})
 
 (def game (create-new-game))
-(get-player-ship game)¨
+(get-player-ship game)
 (def game-jumped-ship (try-move-player-ship game next-planet))
 (def game-jumped-ship2 (try-move-player-ship game-jumped-ship next-system))
 (get-jump-info (get-player-ship game-jumped-ship) (get-position-player-ship game-jumped-ship) next-system)

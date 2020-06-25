@@ -7,7 +7,7 @@
 (defn set-ship-energy-in-game [game v] (assoc-in game [:ship :energy :electric] v))
 (defn change-ship-energy-in-game [game delta] (update-in game [:ship :energy :electric] #(+ % delta)))
 (defn get-energy [ship] (get-in ship [:ship :energy] 0))
-(defn has-energy [ship energy] (>= (get-energy (dbg ship)) energy))
+(defn has-energy [ship energy] (>= (get-energy ship) energy))
 (defn take-energy [ship v]  (set-ship-energy ship (- (get-energy ship) v)))
 
 (get-initial-energy {:k {:battery {:capacity 1000}} :k2 {:battery {:capacity 2000}}})

@@ -17,6 +17,7 @@
      ]
     )
   )
+(def empty-ship-recipe [])
 
 (def transport-ship-recipe
   (let [

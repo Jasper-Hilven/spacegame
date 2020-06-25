@@ -52,8 +52,5 @@
     (is (= false (can-build-block ship {:x 1 :y 1} :basic-storage)))
     (is (= true (can-build-block ship-with-block-storage {:x 1 :y 1} :basic-storage)))))
 
-(defn run-all [] (run-tests))
-
-
-
-(run-all)
+;;(defn run-all [] (run-tests))
+;;(run-all)

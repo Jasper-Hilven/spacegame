@@ -1,18 +1,21 @@
-(ns actor.pathcalculation)
-(use 'ship.basics)
-(use 'actor.crew)
-(require '[clojure.data.priority-map :refer [priority-map]])
+(ns actor.pathcalculation
+  (:require [ship.basics :as b]
+            [clojure.data.priority-map :as pm]))
+
 (defn- is-walkable-at-position [structure point]
   (get-in structure [point :walkable] false))
 
+(defn is-walkable-at-position-ship [ship point]
+  (is-walkable-at-position (b/get-structure ship) point))
+
 (defn- next-positions [point] (let [x (:x point)
-                                    y (:y point)
-                                    ]
+                                    y (:y point)]
+
                                 [{:x x :y (inc y)}
                                  {:x x :y (dec y)}
                                  {:x (dec x) :y y}
-                                 {:x (inc x) :y y}
-                                 ]))
+                                 {:x (inc x) :y y}]))
+
 (defn next-walkable-positions [structure-ship point]
   (filterv #(is-walkable-at-position structure-ship %) (next-positions point)))
 
@@ -52,7 +55,7 @@
   (let [f (memoize #(estimate % goal))                      ; unsure the memoization is worthy
         neighbours (reduce (fn [m [a b]] (assoc m a (conj (m a #{}) b)))
                            {} (keys edges))]
-    (loop [q (priority-map start (f start)) preds {} shortest {start 0}
+    (loop [q (pm/priority-map start (f start)) preds {} shortest {start 0}
            done #{}]
       (when-let [[x hx] (peek q)]
         (if (= goal x)
