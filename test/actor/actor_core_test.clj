@@ -1,4 +1,4 @@
-(ns actor.core-test
+(ns actor.actor-core-test
   (:require [clojure.test :refer :all]
             [world.core :refer :all]
             [ship.basedata :refer :all]

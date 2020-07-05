@@ -39,14 +39,17 @@
 (defn set-person-need [person need value] (assoc-in person [:needs need] value))
 (defn set-person-need-ship [ship person-id need value]
   (c/update-person ship person-id #(set-person-need % need value)))
+
 (defn get-person-need [person need] (get-in person [:needs need]))
 (defn get-person-need-ship [ship person-id need] (get-person-need (c/get-person ship person-id) need))
 
 (defn update-person-stats-with-object [person-stats object-stats time]
   (let [increase (assoc-in-for-stat #(* (get-stat object-stats %) time game-day-per-real-second))]
     (add-stats increase person-stats)))
+
 (defn update-person-with-object [person object-stats time]
   (assoc person :needs (update-person-stats-with-object (:needs person) object-stats time)))
+
 (defn update-person-with-object-ship [ship person-id object-stats time]
   (c/update-person ship person-id #(update-person-with-object % object-stats time)))
 

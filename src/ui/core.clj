@@ -3,7 +3,9 @@
            [com.badlogic.gdx.graphics Color GL20]
            [com.badlogic.gdx.graphics.g2d BitmapFont]
            [com.badlogic.gdx.scenes.scene2d Stage]
-           [com.badlogic.gdx.scenes.scene2d.ui Label Label$LabelStyle]))
+           [com.badlogic.gdx.scenes.scene2d.ui Label Label$LabelStyle]
+           )
+  (:require [ui.element-creation :as c]))
 
 (gen-class
   :name ui.core.Game
@@ -16,6 +18,7 @@
         (reset! stage (Stage.))
         (let [style (Label$LabelStyle. (BitmapFont.) (Color. 1 1 1 1))
               label (Label. "Hello worldos!" style)]
+          (.addActor @stage (c/create-background))
           (.addActor @stage label)))
       (render [delta]
         (.glClearColor (Gdx/gl) 0 0 0 0)

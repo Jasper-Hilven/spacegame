@@ -8,6 +8,8 @@
 
   (let [config (LwjglApplicationConfiguration.)]
     (set! (. config fullscreen) true)
+    (set! (. config width) 1920)
+    (set! (. config height) 1080)
     (LwjglApplication. (ui.core.Game.) config))
   (Keyboard/enableRepeatEvents true))
 
