@@ -17,16 +17,23 @@
       (show []
         (reset! stage (Stage.))
         (let [style (Label$LabelStyle. (BitmapFont.) (Color. 1 1 1 1))
-              label (Label. "Hello worldos!" style)]
+              label (Label. "Hello worldos!" style)
+              panels (c/create-panels 1920 1080)]
           (.addActor @stage (c/create-background))
-          (.addActor @stage label)))
+          (.addActor @stage (get panels 0))
+          (.addActor @stage (get panels 1))
+          (.addActor @stage (get panels 2))
+          (.addActor @stage (get panels 3))
+          (.addActor @stage (get panels 4))
+          ;;(.addActor @stage label)
+          ))
       (render [delta]
         (.glClearColor (Gdx/gl) 0 0 0 0)
         (.glClear (Gdx/gl) GL20/GL_COLOR_BUFFER_BIT)
         (doto @stage
           (.act delta)
           (.draw)))
-      (dispose[])
+      (dispose [])
       (hide [])
       (pause [])
       (resize [w h])
