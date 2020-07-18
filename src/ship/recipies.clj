@@ -1,5 +1,5 @@
 (ns ship.recipies)
-(def start-ship-recipe
+(def test-ship-recipe
   (let [h :basic-chassis
         c :basic-core
         m :basic-motor

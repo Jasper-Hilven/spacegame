@@ -1,7 +1,8 @@
 (ns ui.element-creation
   (:import [com.badlogic.gdx.graphics Pixmap$Format Pixmap Texture Color]
-           [com.badlogic.gdx.scenes.scene2d.ui Image]
-           (com.badlogic.gdx.graphics.g2d TextureRegion)))
+           [com.badlogic.gdx.scenes.scene2d.ui Image Label$LabelStyle Label]
+           (com.badlogic.gdx.graphics.g2d TextureRegion BitmapFont)
+           (com.badlogic.gdx.scenes.scene2d Group)))
 
 ;;000e00ff
 (def rBackground 0)
@@ -11,6 +12,7 @@
 (def background (new Color rBackground gBackground bBackground aBackground))
 (def corner-color (new Color (/ 45.0 255.0) (/ 50.0 255.0) (/ 42.0 255.0) 1))
 
+(defn draw-style [color] (Label$LabelStyle. (BitmapFont.) color))
 (defn create-corners [pixmap size-x size-y]
   (doto pixmap
     (.setColor corner-color)
@@ -40,7 +42,9 @@
                  (.fillRectangle 0 (if bottom 0 corner-remainder) corner-size corner-thickness)
                  (.fillRectangle (if left 0 corner-remainder) 0 corner-thickness corner-size))]
     pixmap))
-(defn create-panel [width height x y]
+(defn create-panel-borders
+  [width height x y ]
+
   (let [pixmap (new Pixmap width height Pixmap$Format/RGBA8888)
         x-corner (- width corner-size)
         y-corner (- height corner-size)
@@ -52,7 +56,8 @@
                  (.drawPixmap lb 0 0)
                  (.drawPixmap rb x-corner 0)
                  (.drawPixmap lu 0 y-corner)
-                 (.drawPixmap ru x-corner y-corner))
+                 (.drawPixmap ru x-corner y-corner)
+                 )
         texture (new Texture pixmap)
         texture-region (new TextureRegion texture)
         disposed [(.dispose pixmap) (.dispose lb) (.dispose rb) (.dispose lu) (.dispose ru)]
@@ -60,9 +65,19 @@
         positioned (.setPosition image x y)
         ] image)
   )
+(defn create-panel [width height x y title-text]
+  (let [group (new Group)
+        panel-borders (create-panel-borders width height 0 0)
+        title (new Label title-text (draw-style corner-color))
+        ]
+    (.addActor group panel-borders)
+    (.addActor group title)
+    (.setPosition title (/ width 3) (- height 30))
+    (.setPosition group x y)
+    group))
 
 (defn create-panels [screenx screeny]
-  (let [margin 20
+  (let [margin 40
         height-big-panel (- screeny (* 2 margin))
         height-small-panel (/ (- height-big-panel margin) 2)
         width-after-margins (- screenx (* 4 margin))
@@ -71,12 +86,10 @@
         x-start-right-panels (+ (* 3 margin) width-big-panel width-small-panel)
         y-start-up-panels (+ height-small-panel (* 2 margin))
         ] [
-           (create-panel width-small-panel height-small-panel margin margin)
-           (create-panel width-small-panel height-small-panel margin y-start-up-panels)
-           (create-panel width-big-panel height-big-panel (+ (* 2 margin) width-small-panel) margin)
-           (create-panel width-small-panel height-small-panel x-start-right-panels margin)
-           (create-panel width-small-panel height-small-panel x-start-right-panels y-start-up-panels)
-           ]
-          ))
+           (create-panel width-small-panel height-small-panel margin margin "Ship")
+           (create-panel width-small-panel height-small-panel margin y-start-up-panels "Personel")
+           (create-panel width-big-panel height-big-panel (+ (* 2 margin) width-small-panel) margin "Plan")
+           (create-panel width-small-panel height-small-panel x-start-right-panels margin "Mission")
+           (create-panel width-small-panel height-small-panel x-start-right-panels y-start-up-panels "Planet")]))
 
 ;;(create-panels 1920 1080 (fn [w h x y] [w h x y]))

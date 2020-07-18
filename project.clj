@@ -22,4 +22,6 @@
 
   :repl-options {:init-ns world.core}
   :aot [ui.desktop-launcher]
+  :plugins [[lein-typed "0.4.6"]]
+  :core.typed {:check [core.game]}
   :main ui.desktop-launcher)

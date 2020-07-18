@@ -24,6 +24,7 @@
      :crew      (start-crew)}))
 
 (defn start-ship [] (build-ship transport-ship-recipe start-pos))
+(defn test-ship [] (build-ship test-ship-recipe start-pos))
 (defn empty-ship [] (build-ship empty-ship-recipe start-pos))
 (is-valid-structure (get-structure (start-ship)))
 

@@ -17,7 +17,7 @@
 
 (def order [:solar-system :galaxy :universe])
 (def ship (start-ship))
-
+(def tests-ship (test-ship))
 (get-jump-info ship start-pos next-planet) :invalid
 
 (get-mass-ship (try-add-to-storage ship {:oil 0}))
@@ -46,11 +46,14 @@
   (is (= (get-crafting-loaded (build-crafting-scenario)) -55.0)))
 
 
-(let [ship-with-block-storage (try-add-to-storage ship {:basic-storage 1})]
-  (deftest do-building
-    (is (= false (can-build-block ship-with-block-storage {:x 0 :y 0} :basic-storage)))
-    (is (= false (can-build-block ship {:x 1 :y 1} :basic-storage)))
-    (is (= true (can-build-block ship-with-block-storage {:x 1 :y 1} :basic-storage)))))
+
+(def do-building-ship-with-block-storage
+  (try-add-to-storage tests-ship {:basic-storage 1}))
+
+(deftest do-building
+  (is (= false (can-build-block do-building-ship-with-block-storage {:x 0 :y 0} :basic-storage)))
+  (is (= false (can-build-block ship {:x 1 :y 1} :basic-storage)))
+  (is (= true (can-build-block do-building-ship-with-block-storage {:x 3 :y 1} :basic-storage))))
 
 ;;(defn run-all [] (run-tests))
 ;;(run-all)
